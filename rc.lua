@@ -18,7 +18,7 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
--- {{{ Error handling
+--  qa+R % E{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
 if awesome.startup_errors then
@@ -35,7 +35,7 @@ do
         if in_error then return end
         in_error = true
 
-       naughty.notify({ preset = naughty.config.presets.critical,
+        naughty.notify({ preset = naughty.config.presets.critical,
                          title = "Oops, an error happened!",
                          text = tostring(err) })
         in_error = false
@@ -46,62 +46,17 @@ end
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
-
 -- Variable definitions
-terminal = "st"
-editor = "vscodium"
-editor_cmd = terminal .. " -e " .. editor
-browser = "firefox"
-telegram = "telegram-desktop"
-whatsapp = "whatsdesk"
-spotify = "spotify"
-xournal = "xournalpp"
-filemanager = "nautilus"
--- Default modkey
 modkey = "Mod4"
+terminal = "st"
 
-
--- Table of layouts to cover with awful.layout.inc, order matters.
+-- Table of layouts
 awful.layout.layouts = {
     awful.layout.suit.tile,
     awful.layout.suit.corner.nw,
     awful.layout.suit.fair,
-    awful.layout.suit.floating,
-    -- awful.layout.suit.spiral,
-    -- awful.layout.suit.spiral.dwindle,
-    -- awful.layout.suit.tile.left,
-    -- awful.layout.suit.tile.bottom,
-    -- awful.layout.suit.tile.top,
-    -- awful.layout.suit.fair.horizontal,
-    -- awful.layout.suit.max,
-    -- awful.layout.suit.max.fullscreen,
-    -- awful.layout.suit.magnifier,
-    -- awful.layout.suit.corner.ne,
-    -- awful.layout.suit.corner.sw,
-    -- awful.layout.suit.corner.se,
+    awful.layout.suit.floating
 }
-
--- {{{ Menu
--- Create a launcher widget and a main menu
-myawesomemenu = {
-   { "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
-   { "manual", terminal .. " -e man awesome" },
-   { "edit config", editor .. " " .. awesome.conffile },
-   { "restart", awesome.restart },
-   { "quit", function() awesome.quit() end },
-}
-
-mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                    { "open terminal", terminal }
-                                  }
-                        })
-
-mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
-                                     menu = mymainmenu })
-
--- Menubar configuration
-menubar.utils.terminal = terminal -- Set the terminal for applications that require it
--- }}}
 
 -- Keyboard map indicator and switcher
 mykeyboardlayout = awful.widget.keyboardlayout()
@@ -150,24 +105,8 @@ local tasklist_buttons = gears.table.join(
                                               awful.client.focus.byidx(-1)
                                           end))
 
-local function set_wallpaper(s)
-    -- Wallpaper
-    if beautiful.wallpaper then
-        local wallpaper = beautiful.wallpaper
-        -- If wallpaper is a function, call it with the screen
-        if type(wallpaper) == "function" then
-            wallpaper = wallpaper(s)
-        end
-        gears.wallpaper.maximized(wallpaper, s, true)
-    end
-end
-
--- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
-screen.connect_signal("property::geometry", set_wallpaper)
 
 awful.screen.connect_for_each_screen(function(s)
-    -- Wallpaper
-    set_wallpaper(s)
 
     -- Each screen has its own tag table.
     awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
@@ -228,155 +167,107 @@ root.buttons(gears.table.join(
 ))
 -- }}}
 
+
+-- {{{ Autostart 
+
+-- Wallpaper
+awful.spawn.with_shell("feh --bg-scale ~/Pictures/Wallpapers/pape.jpg")
+-- Gaps
+beautiful.useless_gap = 7
+-- Internet
+awful.spawn.with_shell("nm-applet")
+-- }}}
+
+
 -- {{{ Key bindings
 
 globalkeys = gears.table.join(
 
-
-    ----------------------------------------------------------------
-    ------------------- My personal keybindings --------------------
-    ----------------------------------------------------------------
-
-
     --- App startup
-    awful.key({ modkey, "Shift"   }, "f", function () awful.spawn(browser) end),
-    awful.key({ modkey, "Shift"   }, "t", function () awful.spawn(telegram) end),
-    awful.key({ modkey, "Shift"   }, "v", function () awful.spawn(editor) end),
-    awful.key({ modkey, "Shift"   }, "w", function () awful.spawn(whatsapp) end),
-    awful.key({ modkey, "Shift"   }, "s", function () awful.spawn(spotify) end),
-    awful.key({ modkey, "Shift"   }, "x", function () awful.spawn(xournal) end),
-    awful.key({ modkey, "Shift"   }, "n", function () awful.spawn(filemanager) end),
-
-    awful.key({ modkey, "Shift", "Control" }, "s", function () awful.spawn(".screenlayout/note_taking_side.sh") end),
-    awful.key({ modkey, "Shift", "Control" }, "h", function () awful.spawn(".screenlayout/note_taking_side.sh") end),
-    awful.key({ modkey, "Shift", "Control" }, "b", function () awful.spawn(".screenlayout/bibliothek_1080.sh") end),
-
-
-    --- Mapping tablet to monitor
-    -- awful.key({ modkey, "Control" }, "1", function () awful.spawn("xinput map-to-output 26 eDP1") end),
-    -- awful.key({ modkey, "Control" }, "2", function () awful.spawn("xinput map-to-output 26 DP1") end),
-
+    awful.key({ modkey, "Shift"   }, "f", function () awful.spawn("firefox") end),
+    awful.key({ modkey, "Shift"   }, "t", function () awful.spawn("telegram-desktop") end),
+    awful.key({ modkey, "Shift"   }, "v", function () awful.spawn("vscodium") end),
+    awful.key({ modkey, "Shift"   }, "w", function () awful.spawn("whatsdesk") end),
+    awful.key({ modkey, "Shift"   }, "s", function () awful.spawn("spotify") end),
+    awful.key({ modkey, "Shift"   }, "x", function () awful.spawn("xournalpp") end),
+    awful.key({ modkey, "Shift"   }, "n", function () awful.spawn("nautilus") end),
+    -- Multi monitor layouts
+    awful.key({ modkey, "Shift", "Control" }, "s", function () awful.spawn(".screenlayout/normal.sh") end, awesome.restart),
+    awful.key({ modkey, "Shift", "Control" }, "h", function () awful.spawn(".screenlayout/note_taking_side.sh") end, awesome.restart),
+    awful.key({ modkey, "Shift", "Control" }, "b", function () awful.spawn(".screenlayout/bibliothek_1080.sh") end, awesome.restart),
     -- Lock screen with i3lock
     awful.key({ modkey,           }, "x", function () awful.spawn("i3lock-fancy-multimonitor -n -b=0x8") end),
-    
     -- Volume controls
     awful.key({}, "XF86AudioRaiseVolume", function () awful.util.spawn("amixer -D pulse sset Master 5%+", false) end),
     awful.key({}, "XF86AudioLowerVolume", function () awful.util.spawn("amixer -D pulse sset Master 5%-", false) end),
     awful.key({}, "XF86AudioMute", function () awful.util.spawn("amixer -D pulse sset Master toggle", false) end),
-
     -- Brightness
     awful.key({ }, "XF86MonBrightnessDown", function () awful.util.spawn("xbacklight -dec 15") end),
     awful.key({ }, "XF86MonBrightnessUp", function () awful.util.spawn("xbacklight -inc 15") end),
-
-    
-    ----------------------------------------------------------------
-    ------------------- My personal keybindings --------------------
-    ----------------------------------------------------------------
-
-
-    awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
-              {description="show help", group="awesome"}),
-    awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
-              {description = "view previous", group = "tag"}),
-    awful.key({ modkey,           }, "Right",  awful.tag.viewnext,
-              {description = "view next", group = "tag"}),
-    awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
-              {description = "go back", group = "tag"}),
-
-    awful.key({ modkey,           }, "j",
-        function ()
-            awful.client.focus.byidx( 1)
-        end,
-        {description = "focus next by index", group = "client"}
-    ),
-    awful.key({ modkey,           }, "k",
-        function ()
-            awful.client.focus.byidx(-1)
-        end,
-        {description = "focus previous by index", group = "client"}
-    ),
-    awful.key({ modkey,           }, "w", function () mymainmenu:show() end,
-              {description = "show main menu", group = "awesome"}),
-
-    -- Layout manipulation
-    awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end,
-              {description = "swap with next client by index", group = "client"}),
-    awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end,
-              {description = "swap with previous client by index", group = "client"}),
-    awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end,
-              {description = "focus the next screen", group = "screen"}),
-    awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end,
-              {description = "focus the previous screen", group = "screen"}),
-    awful.key({ modkey,           }, "u", awful.client.urgent.jumpto,
-              {description = "jump to urgent client", group = "client"}),
+    -- help hotkey,
+    awful.key({modkey}, "s",      hotkeys_popup.show_help),
+    -- previous tag
+    awful.key({modkey}, "Left",   awful.tag.viewprev),
+    -- next tag
+    awful.key({modkey}, "Right",  awful.tag.viewnext),
+    -- last tag
+    awful.key({modkey}, "Escape", awful.tag.history.restore),
+    -- focus next window
+    awful.key({modkey}, "j", function () awful.client.focus.byidx( 1) end),
+    -- focus previous window
+    awful.key({modkey}, "k", function () awful.client.focus.byidx(-1) end),
+    -- swap with next window
+    awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1) end),
+    -- swap with previous window
+    awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1) end),
+    -- focus next screen
+    awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
+    -- focus previous screen
+    awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
+    -- jump to urgent client
+    awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
+    -- go back
     awful.key({ modkey,           }, "Tab",
-        function ()
-            awful.client.focus.history.previous()
+        function () awful.client.focus.history.previous()
             if client.focus then
                 client.focus:raise()
             end
-        end,
-        {description = "go back", group = "client"}),
-
-
-
-
-    -- Standard program
-    awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
-              {description = "open a terminal", group = "launcher"}),
-    awful.key({ modkey, "Control" }, "r", awesome.restart,
-              {description = "reload awesome", group = "awesome"}),
-    awful.key({ modkey, "Shift"   }, "z", awesome.quit,
-              {description = "quit awesome", group = "awesome"}),
-
-    awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end,
-              {description = "increase master width factor", group = "layout"}),
-    awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)          end,
-              {description = "decrease master width factor", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1, nil, true) end,
-              {description = "increase the number of master clients", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster(-1, nil, true) end,
-              {description = "decrease the number of master clients", group = "layout"}),
-    awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1, nil, true)    end,
-              {description = "increase the number of columns", group = "layout"}),
-    awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1, nil, true)    end,
-              {description = "decrease the number of columns", group = "layout"}),
-    awful.key({ modkey,           }, "space", function () awful.layout.inc( 1)                end,
-              {description = "select next", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1)                end,
-              {description = "select previous", group = "layout"}),
-
-
-
+        end),
+    -- terminal
+    awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end),
+    -- restart
+    awful.key({ modkey, "Control" }, "r", awesome.restart),
+    -- quit
+    awful.key({ modkey, "Shift"   }, "z", awesome.quit),
+    -- increase master width factor
+    awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end),
+    -- decrease master width factor
+    awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)          end),
+    -- increase number of master clinets
+    awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1, nil, true) end),
+    -- decrease number of master clinets
+    awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster(-1, nil, true) end),
+    -- increase the number of columns
+    awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1, nil, true)    end),
+    -- decrease the number of columns
+    awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1, nil, true)    end),
+    -- select next
+    awful.key({ modkey,           }, "space", function () awful.layout.inc( 1)                end),
+    -- select previous
+    awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1)                end),
+    -- restore minimized
     awful.key({ modkey, "Control" }, "n",
               function ()
                   local c = awful.client.restore()
-                  -- Focus restored client
                   if c then
-                    c:emit_signal(
-                        "request::activate", "key.unminimize", {raise = true}
-                    )
+                    c:emit_signal("request::activate", "key.unminimize", {raise = true})
                   end
               end,
               {description = "restore minimized", group = "client"}),
-
     -- Prompt
-    awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end,
-              {description = "run prompt", group = "launcher"}),
-
-    awful.key({ modkey, }, "c",
-              function ()
-                  awful.prompt.run {
-                    prompt       = "Run Lua code: ",
-                    textbox      = awful.screen.focused().mypromptbox.widget,
-                    exe_callback = awful.util.eval,
-                    history_path = awful.util.get_cache_dir() .. "/history_eval"
-                  }
-              end,
-              {description = "lua execute prompt", group = "awesome"}),
+    awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end),
     -- Menubar
-    awful.key({ modkey }, "p", function() menubar.show() end,
-              {description = "show the menubar", group = "launcher"})
+    awful.key({ modkey }, "p", function() menubar.show() end)
 )
 
 clientkeys = gears.table.join(
@@ -612,23 +503,3 @@ end)
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
-
-----------------------------------------------------------------
-------------------------- Autostart ----------------------------
-----------------------------------------------------------------
-
--- Wallpaper
-awful.spawn.with_shell("feh --bg-scale ~/Pictures/Wallpapers/pape.jpg")
-
--- Gaps
-beautiful.useless_gap = 7
-
--- Internet
-awful.spawn.with_shell("nm-applet")
-
--- Dualmonitor
--- awful.spawn.with_shell(".screenlayout/note_taking_side.sh")
-
-----------------------------------------------------------------
-------------------------- Autostart ----------------------------
-----------------------------------------------------------------
