@@ -46,6 +46,9 @@ end
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
+-- local nice = require("nice")
+-- nice()
+
 -- Variable definitions
 modkey = "Mod4"
 terminal = "st"
@@ -104,7 +107,6 @@ local tasklist_buttons = gears.table.join(
                      awful.button({ }, 5, function ()
                                               awful.client.focus.byidx(-1)
                                           end))
-
 
 awful.screen.connect_for_each_screen(function(s)
 
@@ -176,6 +178,10 @@ awful.spawn.with_shell("feh --bg-scale ~/Pictures/Wallpapers/pape.jpg")
 beautiful.useless_gap = 7
 -- Internet
 awful.spawn.with_shell("nm-applet")
+-- Compositor
+awful.spawn.with_shell("picom")
+-- Keyboard layouy (default Albanian (Plisi))
+awful.spawn.with_shell("setxkbmap -layout al -variant plisi")
 -- }}}
 
 
@@ -191,10 +197,20 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Shift"   }, "s", function () awful.spawn("spotify") end),
     awful.key({ modkey, "Shift"   }, "x", function () awful.spawn("xournalpp") end),
     awful.key({ modkey, "Shift"   }, "n", function () awful.spawn("nautilus") end),
+    awful.key({ modkey, "Shift"   }, "d", function () awful.spawn("discord") end),
+    awful.key({ modkey, "Shift"   }, "b", function () awful.spawn("blueberry") end),
+    awful.key({ modkey, "Shift"   }, "r", function () awful.spawn("st -e ranger") end),
+    -- Keyboard layout shortcuts
+    awful.key({ modkey,           }, "a", function () awful.spawn("setxkbmap -layout al -variant plisi") end),
+    awful.key({ modkey,           }, "e", function () awful.spawn("setxkbmap -layout us,us") end),
+    awful.key({ modkey,           }, "d", function () awful.spawn("setxkbmap -layout de") end),
+    -- Wacom setup
+    awful.key({ modkey,           }, "w", function () awful.spawn(".screenlayout/wacom.sh") end),
     -- Multi monitor layouts
-    awful.key({ modkey, "Shift", "Control" }, "s", function () awful.spawn(".screenlayout/normal.sh") end, awesome.restart),
-    awful.key({ modkey, "Shift", "Control" }, "h", function () awful.spawn(".screenlayout/note_taking_side.sh") end, awesome.restart),
-    awful.key({ modkey, "Shift", "Control" }, "b", function () awful.spawn(".screenlayout/bibliothek_1080.sh") end, awesome.restart),
+    awful.key({ modkey, "Shift", "Control" }, "n", function () awful.spawn(".screenlayout/normal.sh") end, awesome.restart),
+    awful.key({ modkey, "Shift", "Control" }, "h", function () awful.spawn(".screenlayout/home.sh") end, awesome.restart),
+    awful.key({ modkey, "Shift", "Control" }, "b", function () awful.spawn(".screenlayout/bibliothek_1080.Zsh") end, awesome.restart),
+    awful.key({ modkey, "Shift", "Control" }, "c", function () awful.spawn(".screenlayout/cootie.sh") end, awesome.restart),
     -- Lock screen with i3lock
     awful.key({ modkey,           }, "x", function () awful.spawn("i3lock-fancy-multimonitor -n -b=0x8") end),
     -- Volume controls
@@ -240,9 +256,9 @@ globalkeys = gears.table.join(
     -- quit
     awful.key({ modkey, "Shift"   }, "z", awesome.quit),
     -- increase master width factor
-    awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end),
+    awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.01)          end),
     -- decrease master width factor
-    awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)          end),
+    awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.01)          end),
     -- increase number of master clinets
     awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1, nil, true) end),
     -- decrease number of master clinets
@@ -315,8 +331,6 @@ clientkeys = gears.table.join(
 )
 
 -- Bind all key numbers to tags.
--- Be careful: we use keycodes to make it work on any keyboard layout.
--- This should map on the top row of your keyboard, usually 1 to 9.
 for i = 1, 9 do
     globalkeys = gears.table.join(globalkeys,
         -- View tag only.
@@ -416,9 +430,6 @@ awful.rules.rules = {
           "Wpa_gui",
           "veromix",
           "xtightvncviewer"},
-
-        -- Note that the name property shown in xprop might be set slightly after creation of the client
-        -- and the name shown there might not match defined rules here.
         name = {
           "Event Tester",  -- xev.
         },
@@ -433,10 +444,6 @@ awful.rules.rules = {
     { rule_any = {type = { "normal", "dialog" }
       }, properties = { titlebars_enabled = true }
     },
-
-    -- Set Firefox to always map on the tag named "2" on screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { screen = 1, tag = "2" } },
 }
 -- }}}
 
@@ -454,6 +461,15 @@ client.connect_signal("manage", function (c)
         awful.placement.no_offscreen(c)
     end
 end)
+
+-- Enable sloppy focus, so that focus follows mouse.
+client.connect_signal("mouse::enter", function(c)
+    c:emit_signal("request::activate", "mouse_enter", {raise = false})
+end)
+
+client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+-- }}}
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
 client.connect_signal("request::titlebars", function(c)
@@ -494,12 +510,3 @@ client.connect_signal("request::titlebars", function(c)
         layout = wibox.layout.align.horizontal
     }
 end)
-
--- Enable sloppy focus, so that focus follows mouse.
-client.connect_signal("mouse::enter", function(c)
-    c:emit_signal("request::activate", "mouse_enter", {raise = false})
-end)
-
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
--- }}}
