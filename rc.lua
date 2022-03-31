@@ -51,7 +51,7 @@ beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
 -- Variable definitions
 modkey = "Mod4"
-terminal = "st"
+terminal = "alacritty"
 
 -- Table of layouts
 awful.layout.layouts = {
@@ -196,10 +196,6 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Shift"   }, "s", function () awful.spawn("spotify") end),
     awful.key({ modkey, "Shift"   }, "x", function () awful.spawn("xournal") end),
     awful.key({ modkey, "Shift"   }, "n", function () awful.spawn("nautilus") end),
-<<<<<<< HEAD
-=======
-    awful.key({ modkey, "Shift"   }, "d", function () awful.spawn("discord") end),
->>>>>>> 62c7c0e1a50fd69d902cd49ea31ab789e3dec665
     awful.key({ modkey, "Shift"   }, "b", function () awful.spawn("blueberry") end),
     awful.key({ modkey, "Shift"   }, "r", function () awful.spawn("st -e ranger") end),
     -- Keyboard layout shortcuts
@@ -207,13 +203,9 @@ globalkeys = gears.table.join(
     awful.key({ modkey,           }, "e", function () awful.spawn("setxkbmap -layout us,us") end),
     awful.key({ modkey,           }, "d", function () awful.spawn("setxkbmap -layout de") end),
     -- Wacom setup
-<<<<<<< HEAD
     awful.key({ modkey, "w"       }, "0", function () awful.spawn(".screenlayout/wacom.sh") end),
     awful.key({ modkey, "w"       }, "1", function () awful.spawn(".screenlayout/wacom1.sh") end),
     awful.key({ modkey, "w"       }, "2", function () awful.spawn(".screenlayout/wacom2.sh") end),
-=======
-    awful.key({ modkey,           }, "w", function () awful.spawn(".screenlayout/wacom.sh") end),
->>>>>>> 62c7c0e1a50fd69d902cd49ea31ab789e3dec665
     -- Multi monitor layouts
     awful.key({ modkey, "Shift", "Control" }, "n", function () awful.spawn(".screenlayout/normal.sh") end, awesome.restart),
     awful.key({ modkey, "Shift", "Control" }, "h", function () awful.spawn(".screenlayout/home.sh") end, awesome.restart),
@@ -445,14 +437,6 @@ awful.rules.rules = {
           "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
         }
       }, properties = { floating = true }},
-<<<<<<< HEAD
-=======
-
-    -- Add titlebars to normal clients and dialogs
-    { rule_any = {type = { "normal", "dialog" }
-      }, properties = { titlebars_enabled = true }
-    },
->>>>>>> 62c7c0e1a50fd69d902cd49ea31ab789e3dec665
 }
 -- }}}
 
@@ -478,48 +462,4 @@ end)
 
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
-<<<<<<< HEAD
 -- }}}
-=======
--- }}}
-
--- Add a titlebar if titlebars_enabled is set to true in the rules.
-client.connect_signal("request::titlebars", function(c)
-    -- buttons for the titlebar
-    local buttons = gears.table.join(
-        awful.button({ }, 1, function()
-            c:emit_signal("request::activate", "titlebar", {raise = true})
-            awful.mouse.client.move(c)
-        end),
-        awful.button({ }, 3, function()
-            c:emit_signal("request::activate", "titlebar", {raise = true})
-            awful.mouse.client.resize(c)
-        end)
-    )
-
-    awful.titlebar(c) : setup {
-        { -- Left
-            awful.titlebar.widget.iconwidget(c),
-            buttons = buttons,
-            layout  = wibox.layout.fixed.horizontal
-        },
-        { -- Middle
-            { -- Title
-                align  = "center",
-                widget = awful.titlebar.widget.titlewidget(c)
-            },
-            buttons = buttons,
-            layout  = wibox.layout.flex.horizontal
-        },
-        { -- Right
-            awful.titlebar.widget.floatingbutton (c),
-            awful.titlebar.widget.maximizedbutton(c),
-            awful.titlebar.widget.stickybutton   (c),
-            awful.titlebar.widget.ontopbutton    (c),
-            awful.titlebar.widget.closebutton    (c),
-            layout = wibox.layout.fixed.horizontal()
-        },
-        layout = wibox.layout.align.horizontal
-    }
-end)
->>>>>>> 62c7c0e1a50fd69d902cd49ea31ab789e3dec665
